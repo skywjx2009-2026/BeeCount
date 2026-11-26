@@ -50,10 +50,17 @@ jobs:
       - name: Build development APK
         run: flutter build apk --debug --flavor dev --target-platform android-x64
 
+      - name: Select x86_64 APK
+        run: |
+          mkdir -p artifact
+          apk="$(find build/app/outputs -type f -name '*.apk' | grep 'x86_64' | head -n 1)"
+          test -n "$apk"
+          cp "$apk" artifact/beecount-x86_64-debug.apk
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: beecount-dev-debug-apk
-          path: build/app/outputs/**/*.apk
+          path: artifact/beecount-x86_64-debug.apk
           if-no-files-found: error
           retention-days: 7
